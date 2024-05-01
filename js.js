@@ -24,10 +24,6 @@ if (maincolor != null){
 
 
 
-
-
-
-
 // toggle spain class on icon 
 let settingsbox = document.querySelector(".settings-box");
 
@@ -45,10 +41,16 @@ const colorsli = document.querySelectorAll(".colors-list li");
 colorsli.forEach(li => {
 
 li.addEventListener("click" , (e) => {
+
     const wal = e.target.dataset.color;
     document.documentElement.style.setProperty('--main-color',wal);
 // set color in local storage 
     localStorage.setItem('coloroption' , wal);
+
+
+
+    handleActive(e);
+
     // remove active 
     e.target.parentElement.querySelectorAll('.active').forEach(element => {
 
@@ -63,9 +65,6 @@ e.target.classList.add("active");})
 
 //background option 
 let backgroundrandom = true;
-
-
-
 //varible the interval
 let backgroundinterval;
 
@@ -161,6 +160,7 @@ function randomimage() {
     if(backgroundrandom === true){
 
         backgroundinterval= setInterval(() => {
+
             let randomsec = Math.floor(Math.random() * imagearray.length );
             
         //change background imgaes 
@@ -285,3 +285,157 @@ document.addEventListener('click',function(e) {
         document.querySelector(".popup-overlay").remove();
     }
 })
+
+
+// Select All Bullets
+const allBullets = document.querySelectorAll(".nav-bullets .bullet");
+
+// Select All Links
+const allLinks = document.querySelectorAll(".links a");
+
+function scrollToSomewhere(elements) {
+
+  elements.forEach(ele => {
+
+    ele.addEventListener("click", (e) => {
+  
+      e.preventDefault();
+  
+      document.querySelector(e.target.dataset.section).scrollIntoView({
+  
+        behavior: 'smooth'
+  
+      });
+  
+    });
+  
+  });
+
+}
+
+scrollToSomewhere(allBullets);
+scrollToSomewhere(allLinks);
+
+// Handle Active State
+function handleActive(ev) {
+
+  // Remove Active Class From All Childrens
+  ev.target.parentElement.querySelectorAll(".active").forEach(element => {
+
+    element.classList.remove("active");
+
+  });
+
+  // Add Active Class On Self
+  ev.target.classList.add("active");
+
+}
+
+let bulletsSpan = document.querySelectorAll(".bullets-option span");
+
+let bulletsContainer = document.querySelector(".nav-bullets");
+
+let bulletLocalItem = localStorage.getItem("bullets_option");
+
+if (bulletLocalItem !== null) {
+
+  bulletsSpan.forEach(span => {
+
+    span.classList.remove("active");
+
+  });
+
+  if (bulletLocalItem === 'block') {
+
+    bulletsContainer.style.display = 'block';
+
+    document.querySelector(".bullets-option .yes").classList.add("active");
+
+  } else {
+
+    bulletsContainer.style.display = 'none';
+
+    document.querySelector(".bullets-option .no").classList.add("active");
+
+  }
+
+}
+
+bulletsSpan.forEach(span => {
+
+  span.addEventListener("click", (e) => {
+
+    if (span.dataset.display === 'show') {
+
+      bulletsContainer.style.display = 'block';
+
+      localStorage.setItem("bullets_option", 'block');
+
+    } else {
+
+      bulletsContainer.style.display = 'none';
+
+      localStorage.setItem("bullets_option", 'none');
+
+    }
+
+    handleActive(e);
+
+  });
+
+});
+
+// Reset Button
+document.querySelector(".reset-options").onclick = function () {
+
+  // localStorage.clear();
+  localStorage.removeItem("coloroption");
+  localStorage.removeItem("background-option");
+  localStorage.removeItem("bullets_option");
+
+  // Reload Window
+  window.location.reload();
+
+};
+
+// Toggle Menu 
+let toggleBtn = document.querySelector(".toggle-menu");
+let tLinks = document.querySelector(".links");
+
+toggleBtn.onclick = function (e) {
+
+  // Stop Propagation
+  e.stopPropagation();
+
+  // Toggle Class "menu-active" On Button
+  this.classList.toggle("menu-active");
+
+  // Toggle Class "open" On Links
+  tLinks.classList.toggle("open");
+
+};
+
+// Click Anywhere Outside Menu And Toggle Button
+document.addEventListener("click", (e) => {
+
+  if (e.target !== toggleBtn && e.target !== tLinks) {
+
+    // Check If Menu Is Open
+    if (tLinks.classList.contains("open")) {
+
+      // Toggle Class "menu-active" On Button
+      toggleBtn.classList.toggle("menu-active");
+
+      // Toggle Class "open" On Links
+      tLinks.classList.toggle("open");
+
+    }
+
+  }
+
+});
+
+// Stop Propagation On Menu 
+tLinks.onclick = function (e) {
+  e.stopPropagation();
+}
